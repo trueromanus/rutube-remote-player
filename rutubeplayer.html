@@ -21,6 +21,51 @@ body {
 	allowFullScreen>
 </iframe>
 <script>
+const webClient = {
+	socket: null,
+	connected: false,
+	initClient() {
+		const host = "localhost";
+		const port = 5082;
+		webClient.socket = new WebSocket(`ws://${host}:${port}/playerws`);
+
+		webClient.socket.onclose = () => {
+			console.log("web channel closed");			
+			webClient.connected = false;
+		};
+		webClient.socket.onerror = function(error) {
+			console.error("web channel error: " + error);
+		};
+		webClient.socket.onopen = () => {
+			console.log("socket opened");
+			this.connected = true;			
+		};
+		webClient.socket.onmessage = (event) => {
+			console.log(`message`, event.data);
+			const message = event.data;
+			const parts = message.split(':');
+			debugger;
+			if (parts.length < 2) return;
+			
+			const command = parts[0];
+			const parameter = message.substring(command.length + 1);
+			
+			switch (command) {
+				case "sc":
+					
+					break;
+				case "vm":
+					videoPlayer.volume(parseInt(parameter));
+					break;
+				case "st":
+					if (parameter === 'play') videoPlayer.play();
+					if (parameter === 'pause') videoPlayer.pause();
+					if (parameter === 'stop') videoPlayer.stop();
+					break;
+			}
+		}
+	}
+};
 const videoPlayer = {
 	root: null,
 	initPlayer() {
@@ -35,6 +80,8 @@ const videoPlayer = {
 					break;
 			};*/
 		});
+		
+		webClient.initClient();		
 	},
 	sendMethod(method, methodData) {
 		videoPlayer.root.postMessage(

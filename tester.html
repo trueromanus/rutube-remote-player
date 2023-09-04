@@ -1,0 +1,44 @@
+<style>
+body {
+	margin: 0px;
+}
+</style>
+<body>
+<button onclick="webClient.sendMessage('st','play')">Play</button>
+<button onclick="webClient.sendMessage('st','pause')">Pause</button>
+<button onclick="webClient.muted(true)">Mute</button>
+<button onclick="webClient.muted(false)">UnMute</button>
+<button onclick="webClient.sendMessage('vm','50')">Volume 50</button>
+<button onclick="webClient.sendMessage('vm','100')">Volume 100</button>
+<button onclick="webClient.sendMessage('st','stop')">Stop</button>
+<button onclick="webClient.sendMessage('sc','lalalala')">Source</button>
+<script>
+const webClient = {
+	socket: null,
+	connected: false,
+	sendMessage(command, parameters) {
+		webClient.socket.send(`${command}:${parameters}`);
+	},
+	initClient() {
+		const host = "localhost";
+		const port = 5082;
+		webClient.socket = new WebSocket(`ws://${host}:${port}/playerws`);
+
+		webClient.socket.onclose = () => {
+			console.log("web channel closed");			
+			webClient.connected = false;
+		};
+		webClient.socket.onerror = function(error) {
+			console.error("web channel error: " + error);
+		};
+		webClient.socket.onopen = () => {
+			console.log("socket opened");
+			this.connected = true;			
+		};
+		webClient.socket.onmessage = (event) => {
+			console.log(`message`, event.data);
+		}
+	}
+};
+webClient.initClient();
+</script>
