@@ -25,9 +25,8 @@ const webClient = {
 	socket: null,
 	connected: false,
 	initClient() {
-		const host = "localhost";
-		const port = 5082;
-		webClient.socket = new WebSocket(`ws://${host}:${port}/playerws`);
+		const address = location.hash.substring(1);
+		webClient.socket = new WebSocket(`ws://${address}/playerws`);
 
 		webClient.socket.onclose = () => {
 			console.log("web channel closed");			
@@ -44,7 +43,6 @@ const webClient = {
 			console.log(`message`, event.data);
 			const message = event.data;
 			const parts = message.split(':');
-			debugger;
 			if (parts.length < 2) return;
 			
 			const command = parts[0];
@@ -52,7 +50,11 @@ const webClient = {
 			
 			switch (command) {
 				case "sc":
-					
+					videoPlayer.source(parameter);
+					break;
+				case "mt":
+					if (parameter === 'true') videoPlayer.muted(true);
+					if (parameter === 'false') videoPlayer.muted(false);
 					break;
 				case "vm":
 					videoPlayer.volume(parseInt(parameter));
@@ -68,13 +70,19 @@ const webClient = {
 };
 const videoPlayer = {
 	root: null,
+	iframe: null,
+	loaded: false,
 	initPlayer() {
-		videoPlayer.root = document.getElementsByTagName('iframe')[0].contentWindow;
+		videoPlayer.iframe = document.getElementsByTagName('iframe')[0];
+		videoPlayer.root = videoPlayer.iframe.contentWindow;
 		
 		window.addEventListener('message', function (event) {
-			/*var message = JSON.parse(event.data);
-			console.log(message.type); // some type
-			switch (message.type) {
+			var message = JSON.parse(event.data);
+			console.log(message.type);
+			if (!videoPlayer.loaded && message.type === 'player:currentTime') {
+				videoPlayer.loaded = true;
+			}
+			/*switch (message.type) {
 				case 'player:changeState':
 					console.log(message.data.state); // текущее состояние плеера
 					break;
@@ -95,6 +103,10 @@ const videoPlayer = {
 	volume(newVolume) {
 		videoPlayer.sendMethod('setVolume', {volume: newVolume / 100});
 	},
+	source(path) {
+		const newSource = `https://rutube.ru/play/embed/${path}`;
+		videoPlayer.iframe.src = newSource;
+	},
 	play() {
 		videoPlayer.sendMethod('play', {});
 	},
@@ -112,6 +124,6 @@ const videoPlayer = {
 	}
 };
 
-setTimeout(videoPlayer.initPlayer, 1000);
+setTimeout(videoPlayer.initPlayer, 2000);
 </script>
 </body>

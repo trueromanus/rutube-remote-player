@@ -6,12 +6,12 @@ body {
 <body>
 <button onclick="webClient.sendMessage('st','play')">Play</button>
 <button onclick="webClient.sendMessage('st','pause')">Pause</button>
-<button onclick="webClient.muted(true)">Mute</button>
-<button onclick="webClient.muted(false)">UnMute</button>
+<button onclick="webClient.sendMessage('mt','true')">Mute</button>
+<button onclick="webClient.sendMessage('mt','false')">UnMute</button>
 <button onclick="webClient.sendMessage('vm','50')">Volume 50</button>
 <button onclick="webClient.sendMessage('vm','100')">Volume 100</button>
 <button onclick="webClient.sendMessage('st','stop')">Stop</button>
-<button onclick="webClient.sendMessage('sc','lalalala')">Source</button>
+<button onclick="webClient.sendMessage('sc','8b5ac498bc5a7ee6102ab888e1f064f9')">Source</button>
 <script>
 const webClient = {
 	socket: null,
