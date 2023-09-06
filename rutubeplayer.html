@@ -64,6 +64,9 @@ const webClient = {
 					if (parameter === 'pause') videoPlayer.pause();
 					if (parameter === 'stop') videoPlayer.stop();
 					break;
+				case "sk":
+					videoPlayer.seek(parseInt(parameter));
+					break;
 			}
 		}
 	}
