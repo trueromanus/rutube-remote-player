@@ -17,7 +17,7 @@ const webClient = {
 	socket: null,
 	connected: false,
 	sendMessage(command, parameters) {
-		webClient.socket.send(`${command}:${parameters}`);
+		webClient.socket.send(`rt:${command}:${parameters}`);
 	},
 	initClient() {
 		const host = "localhost";
@@ -33,6 +33,7 @@ const webClient = {
 		};
 		webClient.socket.onopen = () => {
 			console.log("socket opened");
+			webClient.socket.send("ro:qt"); //define role of client
 			this.connected = true;			
 		};
 		webClient.socket.onmessage = (event) => {

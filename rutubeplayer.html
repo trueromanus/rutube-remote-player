@@ -29,7 +29,7 @@ const webClient = {
 		webClient.socket = new WebSocket(`ws://${address}/playerws`);
 
 		webClient.socket.onclose = () => {
-			console.log("web channel closed");			
+			console.log("web channel closed");
 			webClient.connected = false;
 		};
 		webClient.socket.onerror = function(error) {
@@ -37,7 +37,8 @@ const webClient = {
 		};
 		webClient.socket.onopen = () => {
 			console.log("socket opened");
-			this.connected = true;			
+			webClient.socket.send("ro:rt"); //define role of client
+			this.connected = true;
 		};
 		webClient.socket.onmessage = (event) => {
 			console.log(`message`, event.data);
