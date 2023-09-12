@@ -36,7 +36,6 @@ const webClient = {
 			videoPlayer.initPlayer();
 		};
 		webClient.socket.onmessage = (event) => {
-			console.log(`message`, event.data);
 			const message = event.data;
 			const parts = message.split(':');
 			if (parts.length < 2) return;
@@ -49,8 +48,14 @@ const webClient = {
 					videoPlayer.source(parameter);
 					break;
 				case "mt":
-					if (parameter === 'true') videoPlayer.muted(true);
-					if (parameter === 'false') videoPlayer.muted(false);
+					if (parameter === 'true') {
+						videoPlayer.muted(true);
+						break;
+					}
+					if (parameter === 'false') {
+						videoPlayer.muted(false);
+						break;
+					}
 					break;
 				case "vm":
 					videoPlayer.volume(parseInt(parameter));
@@ -72,6 +77,9 @@ const webClient = {
 };
 webClient.initClient();
 
+let mutedState = false;
+let volumeState = 0;
+
 const videoPlayer = {
 	root: null,
 	iframe: null,
@@ -86,13 +94,22 @@ const videoPlayer = {
 			if (!videoPlayer.loaded && message.type === 'player:currentTime') {
 				videoPlayer.loaded = true;
 			}
+			if (message.type === 'player:currentTime') {
+				//console.log(message.data);
+				//{time: 705.99706, playerId: 'video_frame'}
+			}
 			if (message.type === `player:volumeChange`) {
-				// {volume: '70.00', muted: true, playerId: 'video_frame'}
-				webClient.sendCommand("svm", parseInt(message.data.volume));
-				webClient.sendCommand("smt", message.data.muted ? 'true' : 'false');
+				const newVolume = parseInt(message.data.volume);
+				if (volumeState !== newVolume) {
+					webClient.sendCommand("svm", newVolume);
+					volumeState = newVolume;
+				}
+				if (mutedState !== message.data.muted) {
+					webClient.sendCommand("smt", message.data.muted ? 'true' : 'false');
+					mutedState = message.data.muted;
+				}
 			}
 			if (message.type === 'player:changeState') {
-				console.log('state:' + message.data.state);
 				const newState = message.data.state;
 				let transferState = "";
 				switch (newState) {
