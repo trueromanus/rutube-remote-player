@@ -79,6 +79,7 @@ webClient.initClient();
 
 let mutedState = false;
 let volumeState = 0;
+let timeStopper = 0;
 
 const videoPlayer = {
 	root: null,
@@ -95,8 +96,12 @@ const videoPlayer = {
 				videoPlayer.loaded = true;
 			}
 			if (message.type === 'player:currentTime') {
-				//console.log(message.data);
-				//{time: 705.99706, playerId: 'video_frame'}
+				if (timeStopper < 3) {
+					timeStopper++;
+				} else {				
+					timeStopper = 0;
+					webClient.sendCommand("ssk", parseInt(message.data.time));					
+				}
 			}
 			if (message.type === `player:volumeChange`) {
 				const newVolume = parseInt(message.data.volume);
