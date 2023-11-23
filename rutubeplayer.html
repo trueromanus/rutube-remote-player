@@ -116,7 +116,13 @@ const app = Vue.createApp(
 				iframeRoot = document.getElementsByTagName('iframe')[0].contentWindow;
 
 				window.addEventListener('message', (event) => {
-					var message = JSON.parse(event.data);
+					let message
+					try {
+						message = JSON.parse(event.data);
+					} catch {
+						return;
+					}
+					
 					if (message.type !== `player:currentTime`) console.log(message.type);
 					if (!this.videoPlayer.loaded && message.type === 'player:currentTime') {
 						this.videoPlayer.loaded = true;
