@@ -1,0 +1,219 @@
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<style>
+			th, td {
+			  border: 1px solid black;
+			  padding: 10px;
+			  width: 100px;
+			  text-align: center;
+			  font-size: 18px;
+			}
+			
+			table {
+				width: 100%;
+				display: table !important;
+			}
+
+			th {
+			  background-color: #f2f2f2;
+			  color: #333;
+			}
+		</style>
+		<script>
+			let dayParents = null;
+			let dayMy = null;
+			let dayBrother = null;
+			let dayValue = null;
+
+			let nightParents = null;
+			let nightMy = null;
+			let nightBrother = null;
+			let nightValue = null;
+			
+			let dayParentsResult = null;
+			let dayMyResult = null;
+			let dayBrotherResult = null;
+
+			let nightParentsResult = null;
+			let nightMyResult = null;
+			let nightBrotherResult = null;
+
+			let allParentsResult = null;
+			let allMyResult = null;
+			let allBrotherResult = null;
+			let resultTable = null;
+			
+			function fillElements() {
+				dayParents = document.getElementById('day_parents');
+				dayMy = document.getElementById('day_my');
+				dayBrother = document.getElementById('day_brother');
+				dayValue = document.getElementById('day_value');
+
+				nightParents = document.getElementById('night_parents');
+				nightMy = document.getElementById('night_my');
+				nightBrother = document.getElementById('night_brother');
+				nightValue = document.getElementById('night_value');
+				
+				dayParentsResult = document.getElementById('day_parents_result');
+				dayMyResult = document.getElementById('day_my_result');
+				dayBrotherResult = document.getElementById('day_brother_result');
+
+				nightParentsResult = document.getElementById('night_parents_result');
+				nightMyResult = document.getElementById('night_my_result');
+				nightBrotherResult = document.getElementById('night_brother_result');
+				
+				allParentsResult = document.getElementById('all_parents_result');
+				allMyResult = document.getElementById('all_my_result');
+				allBrotherResult = document.getElementById('all_brother_result');
+				
+				resultTable = document.getElementById('resulttable');
+			}
+		
+			function calculatePart(parents, my, brother, value) {
+				const sum = parents + my + brother;
+				const parentsPercent = parents / sum;
+				const myPercent = my / sum;
+				const brotherPercent = brother / sum;
+				
+				return { parents: value * parentsPercent, my: value * myPercent, brother: value * brotherPercent };
+			}
+			function calculate() {
+				const dayData = calculatePart(
+					parseFloat(dayParents.value),
+					parseFloat(dayMy.value),
+					parseFloat(dayBrother.value),
+					parseFloat(dayValue.value)
+				);
+
+				dayParentsResult.innerText = dayData.parents;
+				dayMyResult.innerText = dayData.my;
+				dayBrotherResult.innerText = dayData.brother;
+
+				const nightData = calculatePart(
+					parseFloat(nightParents.value),
+					parseFloat(nightMy.value),
+					parseFloat(nightBrother.value),
+					parseFloat(nightValue.value)
+				);
+
+				nightParentsResult.innerText = nightData.parents;
+				nightMyResult.innerText = nightData.my;
+				nightBrotherResult.innerText = nightData.brother;
+				
+				allParentsResult.innerText = dayData.parents + nightData.parents;
+				allMyResult.innerText = dayData.my + nightData.my;
+				allBrotherResult.innerText = dayData.brother + nightData.brother;
+				
+				resultTable.style.display = "block";
+			}
+			
+			setTimeout(fillElements, 200);
+		</script>		
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>
+					<button onclick="calculate();">Посчитать</button>
+				</td>			
+				<td>
+					Мама+Папа Квт*ч
+				</td>
+				<td>
+					Рома Квт*ч
+				</td>
+				<td>
+					Ваня+Ира Квт*ч
+				</td>
+				<td>
+					Общее Рубли
+				</td>
+			</tr>
+			<tr>
+				<td>
+					День
+				</td>			
+				<td>
+					<input id="day_parents" type="number" min="1" max="300" step="1" />
+				</td>
+				<td>
+					<input id="day_my" type="number" min="1" max="300" step="1" />
+				</td>
+				<td>
+					<input id="day_brother" type="number" min="1" max="300" step="1" />
+				</td>
+				<td>
+					<input id="day_value" type="number" min="1" max="300" step="1" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Ночь
+				</td>
+				<td>
+					<input id="night_parents" type="number" min="1" max="300" step="1" />
+				</td>
+				<td>
+					<input id="night_my" type="number" min="1" max="300" step="1" />
+				</td>
+				<td>
+					<input id="night_brother" type="number" min="1" max="300" step="1" />
+				</td>
+				<td>
+					<input id="night_value" type="number" min="1" max="300" step="1" />
+				</td>				
+			</tr>
+		</table>
+		<br />
+		<table id="resulttable" style="display: none;">
+			<tr>
+				<td>
+					Результат
+				</td>			
+				<td>
+					Мама+Папа
+				</td>
+				<td>
+					Рома
+				</td>
+				<td>
+					Ваня+Ира
+				</td>
+			</tr>
+			<tr>
+				<td>
+					День
+				</td>			
+				<td id="day_parents_result">					
+				</td>
+				<td id="day_my_result">
+				</td>
+				<td id="day_brother_result">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Ночь
+				</td>			
+				<td id="night_parents_result">
+				</td>
+				<td id="night_my_result">
+				</td>
+				<td id="night_brother_result">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Общее
+				</td>			
+				<td id="all_parents_result">
+				</td>
+				<td id="all_my_result">
+				</td>
+				<td id="all_brother_result">
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
